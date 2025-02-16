@@ -15,4 +15,17 @@ contract Sub {
         require(msg.value == fee, "subscription fee is not correct");
         subscriptions[msg.sender] = block.timestamp + 1 days;
     }
+
+
+    function isSubscriptionActive(address user) public view returns (bool) {
+        return subscriptions[user] > block.timestamp;
+    }
+
+    function cancelSubscription() external {
+        require(subscriptions[msg.sender] > block.timestamp, "subscription is inactive");
+        uint256 t = subscriptions[msg.sender] - block.timestamp;
+        uint256 refund = (t * fee) / 1 days;
+        payable(msg.sender).transfer(refund);
+        subscriptions[msg.sender] = 0;
+    }
 }
