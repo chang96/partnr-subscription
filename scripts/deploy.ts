@@ -1,7 +1,7 @@
-const hre = require('hardhat');
+import {ethers} from "hardhat";
 async function main(){
-    const fee = hre.ethers.parseEther("0.01")
-    const Subscription = await hre.ethers.deployContract("Sub", [fee]);
+    const fee = ethers.parseEther("0.01")
+    const Subscription = await ethers.deployContract("Sub", [fee]);
     await Subscription.waitForDeployment();
     console.log("Subscription successfull deployed", Subscription.target)
 
