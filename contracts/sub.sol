@@ -6,6 +6,9 @@ contract Sub {
     uint256 public fee;
     mapping(address => uint256) public subscriptions;
 
+    event SubscriptionStarted(address indexed user, uint256 endTime);
+    event SubscriptionCancelled(address indexed user);
+
     constructor(uint256 _fee) {
         owner = msg.sender;
         fee = _fee;
@@ -14,6 +17,8 @@ contract Sub {
     function startSubscription() public payable {
         require(msg.value == fee, "subscription fee is not correct");
         subscriptions[msg.sender] = block.timestamp + 1 days;
+
+        emit SubscriptionStarted(msg.sender, subscriptions[msg.sender]);
     }
 
 
@@ -27,5 +32,7 @@ contract Sub {
         uint256 refund = (t * fee) / 1 days;
         payable(msg.sender).transfer(refund);
         subscriptions[msg.sender] = 0;
+
+        emit SubscriptionCancelled(msg.sender);
     }
 }

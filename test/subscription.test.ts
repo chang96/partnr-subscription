@@ -46,4 +46,14 @@ describe("sub contract", function (){
         expect(await subscription.isSubscriptionActive(addr1)).to.equal(false);
         expect(balanceAfter).to.be.gt(balanceBefore);
     })
+
+    it("should emit when user takes action", async function(){
+        await subscription.connect(addr1).startSubscription({value: fee});
+        await ethers.provider.send("evm_increaseTime", [0.5*24*60*60]);
+        await ethers.provider.send("evm_mine", []);
+
+        await expect(subscription.connect(addr1).cancelSubscription(addr1))
+            .to.emit(subscription, "SubscriptionCancelled")
+            .withArgs(addr1.address);
+    })
 })
